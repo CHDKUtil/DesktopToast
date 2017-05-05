@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Windows.Data.Xml.Dom;
@@ -19,8 +18,9 @@ namespace DesktopToast
 		/// Shows a toast.
 		/// </summary>
 		/// <param name="request">Toast request</param>
+		/// <param name="logger">Logger</param>
 		/// <returns>Result of showing a toast</returns>
-		public static async Task<ToastResult> ShowAsync(ToastRequest request)
+		public static async Task<ToastResult> ShowAsync(ToastRequest request, ILogger logger = null)
 		{
 			if (request == null)
 				throw new ArgumentNullException(nameof(request));
@@ -29,20 +29,21 @@ namespace DesktopToast
 				return ToastResult.Unavailable;
 
 			if (request.IsShortcutValid)
-				await CheckInstallShortcut(request);
+				await CheckInstallShortcut(request, logger);
 
 			if (!request.IsToastValid)
 				return ToastResult.Invalid;
 
-			return await ShowBaseAsync(request);
+			return await ShowBaseAsync(request, logger);
 		}
 
 		/// <summary>
 		/// Shows a toast using JSON format.
 		/// </summary>
 		/// <param name="requestJson">Toast request in JSON format</param>
+		/// <param name="logger">Logger</param>
 		/// <returns>Result of showing a toast</returns>
-		public static async Task<ToastResult> ShowAsync(string requestJson)
+		public static async Task<ToastResult> ShowAsync(string requestJson, ILogger logger = null)
 		{
 			ToastRequest request;
 			try
@@ -54,7 +55,7 @@ namespace DesktopToast
 				return ToastResult.Invalid;
 			}
 
-			return await ShowAsync(request);
+			return await ShowAsync(request, logger);
 		}
 
 		/// <summary>
@@ -62,8 +63,9 @@ namespace DesktopToast
 		/// </summary>
 		/// <param name="document">Toast document</param>
 		/// <param name="appId">AppUserModelID</param>
+		/// <param name="logger">Logger</param>
 		/// <returns>Result of showing a toast</returns>
-		public static async Task<ToastResult> ShowAsync(XmlDocument document, string appId)
+		public static async Task<ToastResult> ShowAsync(XmlDocument document, string appId, ILogger logger = null)
 		{
 			if (document == null)
 				throw new ArgumentNullException(nameof(document));
@@ -74,7 +76,7 @@ namespace DesktopToast
 			if (!OsVersion.IsEightOrNewer)
 				return ToastResult.Unavailable;
 
-			return await ShowBaseAsync(document, appId);
+			return await ShowBaseAsync(document, appId, logger);
 		}
 
 		#region Document
@@ -90,8 +92,9 @@ namespace DesktopToast
 		/// Prepares a toast document.
 		/// </summary>
 		/// <param name="request">Toast request</param>
+		/// <param name="logger">Logger</param>
 		/// <returns>Toast document</returns>
-		private static XmlDocument PrepareToastDocument(ToastRequest request)
+		private static XmlDocument PrepareToastDocument(ToastRequest request, ILogger logger)
 		{
 			XmlDocument document;
 			if (!string.IsNullOrWhiteSpace(request.ToastXml))
@@ -117,7 +120,7 @@ namespace DesktopToast
 				document = AddAudio(document, request);
 			}
 
-			Debug.WriteLine(document.GetXml());
+			logger?.Log(LogLevel.Debug, document.GetXml());
 
 			return document;
 		}
@@ -283,7 +286,8 @@ namespace DesktopToast
 		/// Checks and installs a shortcut file in Start menu.
 		/// </summary>
 		/// <param name="request">Toast request</param>
-		private static async Task CheckInstallShortcut(ToastRequest request)
+		/// <param name="logger">Logger</param>
+		private static async Task CheckInstallShortcut(ToastRequest request, ILogger logger)
 		{
 			var shortcutFilePath = Path.Combine(
 				Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), // Not CommonStartMenu
@@ -326,14 +330,15 @@ namespace DesktopToast
 		/// Shows a toast.
 		/// </summary>
 		/// <param name="request">Toast request</param>
+		/// <param name="logger">Logger</param>
 		/// <returns>Result of showing a toast</returns>
-		private static async Task<ToastResult> ShowBaseAsync(ToastRequest request)
+		private static async Task<ToastResult> ShowBaseAsync(ToastRequest request, ILogger logger)
 		{
-			var document = PrepareToastDocument(request);
+			var document = PrepareToastDocument(request, logger);
 			if (document == null)
 				return ToastResult.Invalid;
 
-			return await ShowBaseAsync(document, request.AppId);
+			return await ShowBaseAsync(document, request.AppId, logger);
 		}
 
 		/// <summary>
@@ -341,8 +346,9 @@ namespace DesktopToast
 		/// </summary>
 		/// <param name="document">Toast document</param>
 		/// <param name="appId">AppUserModelID</param>
+		/// <param name="logger">Logger</param>
 		/// <returns>Result of showing a toast</returns>
-		private static async Task<ToastResult> ShowBaseAsync(XmlDocument document, string appId)
+		private static async Task<ToastResult> ShowBaseAsync(XmlDocument document, string appId, ILogger logger)
 		{
 			// Create a toast and prepare to handle toast events.
 			var toast = new ToastNotification(document);
@@ -383,7 +389,7 @@ namespace DesktopToast
 			// Wait for the result.
 			var result = await tcs.Task;
 
-			Debug.WriteLine($"Toast result: {result}");
+			logger?.Log(LogLevel.Debug, "Toast result: {0}", result);
 
 			toast.Activated -= activated;
 			toast.Dismissed -= dismissed;
