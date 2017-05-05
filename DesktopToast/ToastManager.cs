@@ -307,6 +307,8 @@ namespace DesktopToast
 				appId: request.AppId,
 				activatorId: request.ActivatorId))
 			{
+				logger?.Log(LogLevel.Debug, "Creating {0}", shortcutFilePath);
+
 				shortcut.InstallShortcut(
 					shortcutPath: shortcutFilePath,
 					targetPath: request.ShortcutTargetFilePath,
@@ -318,7 +320,11 @@ namespace DesktopToast
 					appId: request.AppId,
 					activatorId: request.ActivatorId);
 
-				await Task.Delay((TimeSpan.Zero < request.WaitingDuration) ? request.WaitingDuration : _waitingDuration);
+				var delay = (TimeSpan.Zero < request.WaitingDuration) ? request.WaitingDuration : _waitingDuration;
+
+				logger?.Log(LogLevel.Debug, "Waiting {0}", delay);
+
+				await Task.Delay(delay);
 			}
 		}
 
