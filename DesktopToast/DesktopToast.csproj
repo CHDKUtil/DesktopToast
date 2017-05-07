@@ -57,6 +57,7 @@
     <Compile Include="Helper\Shortcut.cs" />
     <Compile Include="Helper\StringExtension.cs" />
     <Compile Include="ILogger.cs" />
+    <Compile Include="Logging\NullLogger.cs" />
     <Compile Include="LogLevel.cs" />
     <Compile Include="NotificationActivatorBase.cs" />
     <Compile Include="NotificationHelper.cs" />
