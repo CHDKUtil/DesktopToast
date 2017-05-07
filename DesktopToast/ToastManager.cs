@@ -28,6 +28,8 @@ namespace DesktopToast
 			if (!OsVersion.IsEightOrNewer)
 				return ToastResult.Unavailable;
 
+			logger = logger ?? Logging.NullLogger.Instance;
+
 			if (request.IsShortcutValid)
 				await CheckInstallShortcut(request, logger);
 
@@ -55,6 +57,8 @@ namespace DesktopToast
 				return ToastResult.Invalid;
 			}
 
+			logger = logger ?? Logging.NullLogger.Instance;
+
 			return await ShowAsync(request, logger);
 		}
 
@@ -75,6 +79,8 @@ namespace DesktopToast
 
 			if (!OsVersion.IsEightOrNewer)
 				return ToastResult.Unavailable;
+
+			logger = logger ?? Logging.NullLogger.Instance;
 
 			return await ShowBaseAsync(document, appId, logger);
 		}
@@ -120,7 +126,7 @@ namespace DesktopToast
 				document = AddAudio(document, request);
 			}
 
-			logger?.Log(LogLevel.Debug, document.GetXml());
+			logger.Log(LogLevel.Debug, document.GetXml());
 
 			return document;
 		}
@@ -307,7 +313,7 @@ namespace DesktopToast
 				appId: request.AppId,
 				activatorId: request.ActivatorId))
 			{
-				logger?.Log(LogLevel.Debug, "Creating {0}", shortcutFilePath);
+				logger.Log(LogLevel.Debug, "Creating {0}", shortcutFilePath);
 
 				shortcut.InstallShortcut(
 					shortcutPath: shortcutFilePath,
@@ -322,7 +328,7 @@ namespace DesktopToast
 
 				var delay = (TimeSpan.Zero < request.WaitingDuration) ? request.WaitingDuration : _waitingDuration;
 
-				logger?.Log(LogLevel.Debug, "Waiting {0}", delay);
+				logger.Log(LogLevel.Debug, "Waiting {0}", delay);
 
 				await Task.Delay(delay);
 			}
@@ -408,7 +414,7 @@ namespace DesktopToast
 			// Wait for the result.
 			var result = await tcs.Task;
 
-			logger?.Log(LogLevel.Debug, "Toast result: {0}", result);
+			logger.Log(LogLevel.Debug, "Toast result: {0}", result);
 
 			toast.Activated -= activated;
 			toast.Dismissed -= dismissed;
