@@ -20,6 +20,7 @@ namespace DesktopToast.Helper
 		/// <param name="iconPath">Icon file path of shortcut</param>
 		/// <param name="appId">AppUserModelID of shortcut</param>
 		/// <param name="activatorId">AppUserModelToastActivatorCLSID of shortcut</param>
+		/// <param name="logger">Logger</param>
 		/// <returns>True if exists</returns>
 		public bool CheckShortcut(
 			string shortcutPath,
@@ -30,7 +31,8 @@ namespace DesktopToast.Helper
 			ShortcutWindowState windowState,
 			string iconPath,
 			string appId,
-			Guid activatorId)
+			Guid activatorId,
+			ILogger logger)
 		{
 			if (!File.Exists(shortcutPath))
 				return false;
@@ -61,6 +63,7 @@ namespace DesktopToast.Helper
 		/// <param name="iconPath">Icon file path of shortcut</param>
 		/// <param name="appId">AppUserModelID of shortcut</param>
 		/// <param name="activatorId">AppUserModelToastActivatorCLSID of shortcut</param>
+		/// <param name="logger">Logger</param>
 		public void InstallShortcut(
 			string shortcutPath,
 			string targetPath,
@@ -70,10 +73,13 @@ namespace DesktopToast.Helper
 			ShortcutWindowState windowState,
 			string iconPath,
 			string appId,
-			Guid activatorId)
+			Guid activatorId,
+			ILogger logger)
 		{
 			if (string.IsNullOrWhiteSpace(shortcutPath))
 				throw new ArgumentNullException(nameof(shortcutPath));
+
+			logger.Log(LogLevel.Debug, "Creating {0}", shortcutPath);
 
 			using (var shellLink = new ShellLink
 			{
@@ -106,6 +112,7 @@ namespace DesktopToast.Helper
 		/// <param name="iconPath">Icon file path of shortcut</param>
 		/// <param name="appId">AppUserModelID of shortcut</param>
 		/// <param name="activatorId">AppUserModelToastActivatorCLSID of shortcut</param>
+		/// <param name="logger">Logger</param>
 		/// <remarks>If contents of shortcut do not match, the shortcut file will not be deleted.</remarks>
 		public void DeleteShortcut(
 			string shortcutPath,
@@ -116,7 +123,8 @@ namespace DesktopToast.Helper
 			ShortcutWindowState windowState,
 			string iconPath,
 			string appId,
-			Guid activatorId)
+			Guid activatorId,
+			ILogger logger)
 		{
 			if (!CheckShortcut(
 				shortcutPath: shortcutPath,
@@ -127,8 +135,11 @@ namespace DesktopToast.Helper
 				windowState: windowState,
 				iconPath: iconPath,
 				appId: appId,
-				activatorId: activatorId))
+				activatorId: activatorId,
+				logger: logger))
 				return;
+
+			logger.Log(LogLevel.Debug, "Deleting {0}", shortcutPath);
 
 			File.Delete(shortcutPath);
 		}
