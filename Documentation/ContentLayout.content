@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Topics>
+  <Topic id="f36f82d9-121d-4756-881a-9a83aad4653e" visible="True" isDefault="true" title="Welcome to DesktopToast">
+    <HelpKeywords>
+      <HelpKeyword index="K" term="Welcome" />
+    </HelpKeywords>
+  </Topic>
+  <Topic id="217c1e06-0724-4799-8e31-f6f2867fb8c3" visible="True" isSelected="true" title="Version History">
+    <HelpKeywords>
+      <HelpKeyword index="K" term="version, history" />
+    </HelpKeywords>
+  </Topic>
+</Topics>

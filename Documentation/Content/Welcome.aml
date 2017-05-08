@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<topic id="f36f82d9-121d-4756-881a-9a83aad4653e" revisionNumber="1">
+	<developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+		<introduction>
+			<para>A library for toast notifications from desktop app. This library will, if necessary, install a shortcut in Windows startup and show a toast asynchronously.</para>
+		</introduction>
+
+		<section>
+			<title>Requirements</title>
+			<content>
+
+				<list class="bullet">
+					<listItem>
+						<para>.NET Framework 4.5.2</para>
+					</listItem>
+
+					<listItem>
+						<para>Windows 8.0 or newer</para>
+					</listItem>
+				</list>
+
+      </content>
+		</section>
+
+    <section>
+      <title>License</title>
+      <content>
+        
+        <list class="bullet">
+          <listItem>
+            <para>MIT License</para>
+          </listItem>
+        </list>
+        
+        </content>
+    </section>
+
+		<relatedTopics>
+      <externalLink>
+        <linkUri>https://github.com/CHDKUtil/DesktopToast</linkUri>
+        <linkText>DesktopToast on GitHub</linkText>
+      </externalLink>
+    </relatedTopics>
+	</developerConceptualDocument>
+</topic>

@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="217c1e06-0724-4799-8e31-f6f2867fb8c3" revisionNumber="1">
+	<developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+		<introduction>
+			<para>The topics in this section describe the various changes made to DesktopToast over the life of the project.</para>
+		</introduction>
+
+		<section>
+			<title>Version History</title>
+			<content>
+				<para>Select a version below to see a description of its changes.</para>
+
+				<!--<list class="bullet">
+					<listItem>
+						<para><link xlink:href="bf6d410a-950f-4c1d-8acc-82eb92658c36" /></para>
+					</listItem>
+
+					<listItem>
+						<para>[TODO: Add links to each specific version page]</para>
+					</listItem>
+
+				</list>-->
+
+			</content>
+		</section>
+
+		<relatedTopics>
+			<link xlink:href="f36f82d9-121d-4756-881a-9a83aad4653e" />
+		</relatedTopics>
+
+	</developerConceptualDocument>
+</topic>
