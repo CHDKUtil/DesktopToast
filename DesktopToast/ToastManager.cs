@@ -12,7 +12,7 @@ namespace DesktopToast
 	/// <summary>
 	/// Manages toast notifications.
 	/// </summary>
-	public class ToastManager
+	public static class ToastManager
 	{
 		/// <summary>
 		/// Shows a toast.
