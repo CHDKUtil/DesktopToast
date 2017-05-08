@@ -2,7 +2,6 @@
 using System.IO;
 using System.Threading.Tasks;
 using Windows.Data.Xml.Dom;
-using Windows.Foundation;
 using Windows.UI.Notifications;
 
 using DesktopToast.Helper;
@@ -362,65 +361,7 @@ namespace DesktopToast
 		/// <returns>Result of showing a toast</returns>
 		private static async Task<ToastResult> ShowBaseAsync(XmlDocument document, string appId, ILogger logger)
 		{
-			var notifier = ToastNotificationManager.CreateToastNotifier(appId);
-			switch (notifier.Setting)
-			{
-				case NotificationSetting.DisabledForApplication:
-					return ToastResult.DisabledForApplication;
-				case NotificationSetting.DisabledForUser:
-					return ToastResult.DisabledForUser;
-				case NotificationSetting.DisabledByGroupPolicy:
-					return ToastResult.DisabledByGroupPolicy;
-				case NotificationSetting.DisabledByManifest:
-					return ToastResult.DisabledByManifest;
-			}
-
-			// Create a toast and prepare to handle toast events.
-			var toast = new ToastNotification(document);
-			var tcs = new TaskCompletionSource<ToastResult>();
-
-			TypedEventHandler<ToastNotification, object> activated = (sender, e) =>
-			{
-				tcs.SetResult(ToastResult.Activated);
-			};
-			toast.Activated += activated;
-
-			TypedEventHandler<ToastNotification, ToastDismissedEventArgs> dismissed = (sender, e) =>
-			{
-				switch (e.Reason)
-				{
-					case ToastDismissalReason.ApplicationHidden:
-						tcs.SetResult(ToastResult.ApplicationHidden);
-						break;
-					case ToastDismissalReason.UserCanceled:
-						tcs.SetResult(ToastResult.UserCanceled);
-						break;
-					case ToastDismissalReason.TimedOut:
-						tcs.SetResult(ToastResult.TimedOut);
-						break;
-				}
-			};
-			toast.Dismissed += dismissed;
-
-			TypedEventHandler<ToastNotification, ToastFailedEventArgs> failed = (sender, e) =>
-			{
-				tcs.SetResult(ToastResult.Failed);
-			};
-			toast.Failed += failed;
-
-			// Show a toast.
-			notifier.Show(toast);
-
-			// Wait for the result.
-			var result = await tcs.Task;
-
-			logger.Log(LogLevel.Debug, "Toast result: {0}", result);
-
-			toast.Activated -= activated;
-			toast.Dismissed -= dismissed;
-			toast.Failed -= failed;
-
-			return result;
+			return await new Toast(logger).ShowAsync(document, appId);
 		}
 
 		#endregion

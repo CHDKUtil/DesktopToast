@@ -59,6 +59,7 @@
     <Compile Include="Helper\ShellLink.cs" />
     <Compile Include="Helper\Shortcut.cs" />
     <Compile Include="Helper\StringExtension.cs" />
+    <Compile Include="Helper\Toast.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="Logging\NamespaceDoc.cs" />
     <Compile Include="Logging\NullLogger.cs" />
