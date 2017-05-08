@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 
@@ -27,8 +28,9 @@ namespace DesktopToast.Helper
 		/// </summary>
 		/// <param name="document">Toast document</param>
 		/// <param name="appId">AppUserModelID</param>
+		/// <param name="maximumDuration">Optional maximum duration</param>
 		/// <returns>Result of showing a toast</returns>
-		public async Task<ToastResult> ShowAsync(XmlDocument document, string appId)
+		public async Task<ToastResult> ShowAsync(XmlDocument document, string appId, TimeSpan? maximumDuration)
 		{
 			var notifier = ToastNotificationManager.CreateToastNotifier(appId);
 			if (notifier.Setting != NotificationSetting.Enabled)
@@ -36,6 +38,10 @@ namespace DesktopToast.Helper
 
 			// Create a toast and prepare to handle toast events.
 			var toast = new ToastNotification(document);
+			if (maximumDuration != null)
+			{
+				toast.ExpirationTime = DateTime.Now + maximumDuration;
+			}
 
 			toast.Activated += Toast_Activated;
 			toast.Dismissed += Toast_Dismissed;
