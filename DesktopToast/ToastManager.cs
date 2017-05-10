@@ -19,7 +19,7 @@ namespace DesktopToast
 		/// <param name="request">Toast request</param>
 		/// <param name="logger">Logger</param>
 		/// <returns>Result of showing a toast</returns>
-		public static async Task<ToastResult> ShowAsync(ToastRequest request, ILogger logger)
+		public static async Task<ToastResult> ShowAsync(ToastRequest request, ILogger logger = null)
 		{
 			if (request == null)
 				throw new ArgumentNullException(nameof(request));
@@ -39,22 +39,12 @@ namespace DesktopToast
 		}
 
 		/// <summary>
-		/// Shows a toast.
-		/// </summary>
-		/// <param name="request">Toast request</param>
-		/// <returns>Result of showing a toast</returns>
-		public static async Task<ToastResult> ShowAsync(ToastRequest request)
-		{
-			return await ShowAsync(request, null);
-		}
-
-		/// <summary>
 		/// Shows a toast using JSON format.
 		/// </summary>
 		/// <param name="requestJson">Toast request in JSON format</param>
 		/// <param name="logger">Logger</param>
 		/// <returns>Result of showing a toast</returns>
-		public static async Task<ToastResult> ShowAsync(string requestJson, ILogger logger)
+		public static async Task<ToastResult> ShowAsync(string requestJson, ILogger logger = null)
 		{
 			ToastRequest request;
 			try
@@ -72,23 +62,13 @@ namespace DesktopToast
 		}
 
 		/// <summary>
-		/// Shows a toast using JSON format.
-		/// </summary>
-		/// <param name="requestJson">Toast request in JSON format</param>
-		/// <returns>Result of showing a toast</returns>
-		public static async Task<ToastResult> ShowAsync(string requestJson)
-		{
-			return await ShowAsync(requestJson, null);
-		}
-
-		/// <summary>
 		/// Shows a toast without toast request.
 		/// </summary>
 		/// <param name="document">Toast document</param>
 		/// <param name="appId">AppUserModelID</param>
 		/// <param name="logger">Logger</param>
 		/// <returns>Result of showing a toast</returns>
-		public static async Task<ToastResult> ShowAsync(XmlDocument document, string appId, ILogger logger)
+		public static async Task<ToastResult> ShowAsync(XmlDocument document, string appId, ILogger logger = null)
 		{
 			if (document == null)
 				throw new ArgumentNullException(nameof(document));
@@ -102,17 +82,6 @@ namespace DesktopToast
 			logger = logger ?? Logging.NullLogger.Instance;
 
 			return await ShowBaseAsync(document, appId, default(TimeSpan), logger);
-		}
-
-		/// <summary>
-		/// Shows a toast without toast request.
-		/// </summary>
-		/// <param name="document">Toast document</param>
-		/// <param name="appId">AppUserModelID</param>
-		/// <returns>Result of showing a toast</returns>
-		public static async Task<ToastResult> ShowAsync(XmlDocument document, string appId)
-		{
-			return await ShowAsync(document, appId, null);
 		}
 
 		#region Document
