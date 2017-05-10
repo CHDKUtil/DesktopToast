@@ -30,7 +30,7 @@ namespace DesktopToast.Helper
 		/// <param name="appId">AppUserModelID</param>
 		/// <param name="maximumDuration">Optional maximum duration</param>
 		/// <returns>Result of showing a toast</returns>
-		public async Task<ToastResult> ShowAsync(XmlDocument document, string appId, TimeSpan? maximumDuration)
+		public async Task<ToastResult> ShowAsync(XmlDocument document, string appId, TimeSpan maximumDuration)
 		{
 			var notifier = ToastNotificationManager.CreateToastNotifier(appId);
 			if (notifier.Setting != NotificationSetting.Enabled)
@@ -38,7 +38,7 @@ namespace DesktopToast.Helper
 
 			// Create a toast and prepare to handle toast events.
 			var toast = new ToastNotification(document);
-			if (maximumDuration != null)
+			if (maximumDuration != default(TimeSpan))
 			{
 				toast.ExpirationTime = DateTime.Now + maximumDuration;
 			}

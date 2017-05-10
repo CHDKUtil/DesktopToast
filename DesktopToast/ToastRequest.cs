@@ -147,6 +147,11 @@ namespace DesktopToast
 		[DataMember]
 		public TimeSpan WaitingDuration { get; set; }
 
+		/// <summary>
+		/// Maximum toast display duration (optional)
+		/// </summary>
+		public TimeSpan MaximumDuration { get; set; }
+
 		#endregion
 
 		#region Internal Property
