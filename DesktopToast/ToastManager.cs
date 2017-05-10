@@ -81,7 +81,7 @@ namespace DesktopToast
 
 			logger = logger ?? Logging.NullLogger.Instance;
 
-			return await ShowBaseAsync(document, appId, default(TimeSpan), logger);
+			return await ShowBaseAsync(document, appId, logger);
 		}
 
 		#region Document
@@ -349,7 +349,7 @@ namespace DesktopToast
 			if (document == null)
 				return ToastResult.Invalid;
 
-			return await ShowBaseAsync(document, request.AppId, request.MaximumDuration, logger);
+			return await ShowBaseAsync(document, request.AppId, logger, request.MaximumDuration);
 		}
 
 		/// <summary>
@@ -357,10 +357,10 @@ namespace DesktopToast
 		/// </summary>
 		/// <param name="document">Toast document</param>
 		/// <param name="appId">AppUserModelID</param>
-		/// <param name="maximumDuration">Optional maximum duration</param>
 		/// <param name="logger">Logger</param>
+		/// <param name="maximumDuration">Optional maximum duration</param>
 		/// <returns>Result of showing a toast</returns>
-		private static async Task<ToastResult> ShowBaseAsync(XmlDocument document, string appId, TimeSpan maximumDuration, ILogger logger)
+		private static async Task<ToastResult> ShowBaseAsync(XmlDocument document, string appId, ILogger logger, TimeSpan maximumDuration = default(TimeSpan))
 		{
 			return await new Toast(logger).ShowAsync(document, appId, maximumDuration);
 		}
