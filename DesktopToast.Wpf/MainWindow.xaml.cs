@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Chimp.Logging;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -143,7 +144,7 @@ namespace DesktopToast.Wpf
 				ActivatorId = typeof(NotificationActivator).GUID // For Action Center of Windows 10
 			};
 
-			var result = await ToastManager.ShowAsync(request);
+			var result = await ToastManager.ShowAsync(request, NoOpLogger.Instance);
 
 			return result.ToString();
 		}
@@ -167,7 +168,7 @@ namespace DesktopToast.Wpf
 				ActivatorId = typeof(NotificationActivator).GUID
 			};
 
-			var result = await ToastManager.ShowAsync(request);
+			var result = await ToastManager.ShowAsync(request, NoOpLogger.Instance);
 
 			return result.ToString();
 		}

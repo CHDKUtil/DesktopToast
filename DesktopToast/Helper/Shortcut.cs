@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 
+using Chimp.Logging;
+
 namespace DesktopToast.Helper
 {
 	/// <summary>

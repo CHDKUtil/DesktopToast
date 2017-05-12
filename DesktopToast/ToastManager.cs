@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 
+using Chimp.Logging;
 using DesktopToast.Helper;
 
 namespace DesktopToast
@@ -19,15 +20,13 @@ namespace DesktopToast
 		/// <param name="request">Toast request</param>
 		/// <param name="logger">Logger</param>
 		/// <returns>Result of showing a toast</returns>
-		public static async Task<ToastResult> ShowAsync(ToastRequest request, ILogger logger = null)
+		public static async Task<ToastResult> ShowAsync(ToastRequest request, ILogger logger)
 		{
 			if (request == null)
 				throw new ArgumentNullException(nameof(request));
 
 			if (!OsVersion.IsEightOrNewer)
 				return ToastResult.Unavailable;
-
-			logger = logger ?? Logging.NullLogger.Instance;
 
 			if (request.IsShortcutValid)
 				await CheckInstallShortcut(request, logger);
@@ -44,7 +43,7 @@ namespace DesktopToast
 		/// <param name="requestJson">Toast request in JSON format</param>
 		/// <param name="logger">Logger</param>
 		/// <returns>Result of showing a toast</returns>
-		public static async Task<ToastResult> ShowAsync(string requestJson, ILogger logger = null)
+		public static async Task<ToastResult> ShowAsync(string requestJson, ILogger logger)
 		{
 			ToastRequest request;
 			try
@@ -56,8 +55,6 @@ namespace DesktopToast
 				return ToastResult.Invalid;
 			}
 
-			logger = logger ?? Logging.NullLogger.Instance;
-
 			return await ShowAsync(request, logger);
 		}
 
@@ -68,7 +65,7 @@ namespace DesktopToast
 		/// <param name="appId">AppUserModelID</param>
 		/// <param name="logger">Logger</param>
 		/// <returns>Result of showing a toast</returns>
-		public static async Task<ToastResult> ShowAsync(XmlDocument document, string appId, ILogger logger = null)
+		public static async Task<ToastResult> ShowAsync(XmlDocument document, string appId, ILogger logger)
 		{
 			if (document == null)
 				throw new ArgumentNullException(nameof(document));
@@ -78,8 +75,6 @@ namespace DesktopToast
 
 			if (!OsVersion.IsEightOrNewer)
 				return ToastResult.Unavailable;
-
-			logger = logger ?? Logging.NullLogger.Instance;
 
 			return await ShowBaseAsync(document, appId, logger);
 		}

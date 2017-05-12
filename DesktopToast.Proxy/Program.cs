@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Chimp.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,7 +29,7 @@ namespace DesktopToast.Proxy
 #endif
 			}
 
-			ToastManager.ShowAsync(requestString)
+			ToastManager.ShowAsync(requestString, NoOpLogger.Instance)
 				.ContinueWith(result => Console.WriteLine(result.Result))
 				.Wait();
 		}

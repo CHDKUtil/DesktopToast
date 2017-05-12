@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Chimp.Logging;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -37,7 +38,7 @@ namespace DesktopToast.WinForms
 				AppId = "DesktopToast.WinForms",
 			};
 
-			var result = await ToastManager.ShowAsync(request);
+			var result = await ToastManager.ShowAsync(request, NoOpLogger.Instance);
 
 			return result.ToString();
 		}

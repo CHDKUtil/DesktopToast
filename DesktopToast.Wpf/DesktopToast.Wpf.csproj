@@ -42,6 +42,10 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Chimp.Logging.Core, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Chimp.Logging.Core.0.1.1-alpha\lib\net45\Chimp.Logging.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="NotificationsExtensions.Win10.NETCore, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NotificationsExtensions.Win10.14332.0.0\lib\dotnet\NotificationsExtensions.Win10.NETCore.dll</HintPath>
       <Private>True</Private>
