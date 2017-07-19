@@ -10,32 +10,37 @@ namespace DesktopToast.Helper
 	/// </summary>
 	internal class Shortcut
 	{
-		/// <summary>
-		/// Check if a specified shortcut file exists.
-		/// </summary>
-		/// <param name="shortcutPath">Shortcut file path</param>
-		/// <param name="targetPath">Target file path of shortcut</param>
-		/// <param name="arguments">Arguments of shortcut</param>
-		/// <param name="comment">Comment of shortcut</param>
-		/// <param name="workingFolder">Working folder of shortcut</param>
-		/// <param name="windowState">Window state of shortcut</param>
-		/// <param name="iconPath">Icon file path of shortcut</param>
-		/// <param name="appId">AppUserModelID of shortcut</param>
-		/// <param name="activatorId">AppUserModelToastActivatorCLSID of shortcut</param>
-		/// <param name="logger">Logger</param>
-		/// <returns>True if exists</returns>
-		public bool CheckShortcut(
-			string shortcutPath,
-			string targetPath,
-			string arguments,
-			string comment,
-			string workingFolder,
-			ShortcutWindowState windowState,
-			string iconPath,
-			string appId,
-			Guid activatorId,
-			ILogger logger)
-		{
+        private readonly ILogger logger;
+
+        public Shortcut(ILoggerFactory loggerFactory)
+        {
+            logger = loggerFactory.CreateLogger<Shortcut>();
+        }
+
+        /// <summary>
+        /// Check if a specified shortcut file exists.
+        /// </summary>
+        /// <param name="shortcutPath">Shortcut file path</param>
+        /// <param name="targetPath">Target file path of shortcut</param>
+        /// <param name="arguments">Arguments of shortcut</param>
+        /// <param name="comment">Comment of shortcut</param>
+        /// <param name="workingFolder">Working folder of shortcut</param>
+        /// <param name="windowState">Window state of shortcut</param>
+        /// <param name="iconPath">Icon file path of shortcut</param>
+        /// <param name="appId">AppUserModelID of shortcut</param>
+        /// <param name="activatorId">AppUserModelToastActivatorCLSID of shortcut</param>
+        /// <returns>True if exists</returns>
+        public bool CheckShortcut(
+            string shortcutPath,
+            string targetPath,
+            string arguments,
+            string comment,
+            string workingFolder,
+            ShortcutWindowState windowState,
+            string iconPath,
+            string appId,
+            Guid activatorId)
+        {
 			if (!File.Exists(shortcutPath))
 				return false;
 
@@ -65,19 +70,17 @@ namespace DesktopToast.Helper
 		/// <param name="iconPath">Icon file path of shortcut</param>
 		/// <param name="appId">AppUserModelID of shortcut</param>
 		/// <param name="activatorId">AppUserModelToastActivatorCLSID of shortcut</param>
-		/// <param name="logger">Logger</param>
 		public void InstallShortcut(
-			string shortcutPath,
-			string targetPath,
-			string arguments,
-			string comment,
-			string workingFolder,
-			ShortcutWindowState windowState,
-			string iconPath,
-			string appId,
-			Guid activatorId,
-			ILogger logger)
-		{
+            string shortcutPath,
+            string targetPath,
+            string arguments,
+            string comment,
+            string workingFolder,
+            ShortcutWindowState windowState,
+            string iconPath,
+            string appId,
+            Guid activatorId)
+        {
 			if (string.IsNullOrWhiteSpace(shortcutPath))
 				throw new ArgumentNullException(nameof(shortcutPath));
 
@@ -114,31 +117,28 @@ namespace DesktopToast.Helper
 		/// <param name="iconPath">Icon file path of shortcut</param>
 		/// <param name="appId">AppUserModelID of shortcut</param>
 		/// <param name="activatorId">AppUserModelToastActivatorCLSID of shortcut</param>
-		/// <param name="logger">Logger</param>
 		/// <remarks>If contents of shortcut do not match, the shortcut file will not be deleted.</remarks>
 		public void DeleteShortcut(
-			string shortcutPath,
-			string targetPath,
-			string arguments,
-			string comment,
-			string workingFolder,
-			ShortcutWindowState windowState,
-			string iconPath,
-			string appId,
-			Guid activatorId,
-			ILogger logger)
-		{
+            string shortcutPath,
+            string targetPath,
+            string arguments,
+            string comment,
+            string workingFolder,
+            ShortcutWindowState windowState,
+            string iconPath,
+            string appId,
+            Guid activatorId)
+        {
 			if (!CheckShortcut(
-				shortcutPath: shortcutPath,
-				targetPath: targetPath,
-				arguments: arguments,
-				comment: comment,
-				workingFolder: workingFolder,
-				windowState: windowState,
-				iconPath: iconPath,
-				appId: appId,
-				activatorId: activatorId,
-				logger: logger))
+                shortcutPath: shortcutPath,
+                targetPath: targetPath,
+                arguments: arguments,
+                comment: comment,
+                workingFolder: workingFolder,
+                windowState: windowState,
+                iconPath: iconPath,
+                appId: appId,
+                activatorId: activatorId))
 				return;
 
 			logger.Log(LogLevel.Debug, "Deleting {0}", shortcutPath);

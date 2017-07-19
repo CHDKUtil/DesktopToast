@@ -12,16 +12,28 @@ namespace DesktopToast
 	/// <summary>
 	/// Manages toast notifications.
 	/// </summary>
-	public static class ToastManager
+	public class ToastManager
 	{
+        private readonly ILoggerFactory loggerFactory;
+        private readonly ILogger logger;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ToastManager"/> class.
+        /// </summary>
+        /// <param name="loggerFactory">Logger factory</param>
+        public ToastManager(ILoggerFactory loggerFactory)
+        {
+            this.loggerFactory = loggerFactory;
+            logger = loggerFactory.CreateLogger<ToastManager>();
+        }
+
 		/// <summary>
 		/// Shows a toast.
 		/// </summary>
 		/// <param name="request">Toast request</param>
-		/// <param name="logger">Logger</param>
 		/// <returns>Result of showing a toast</returns>
-		public static async Task<ToastResult> ShowAsync(ToastRequest request, ILogger logger)
-		{
+		public async Task<ToastResult> ShowAsync(ToastRequest request)
+        {
 			if (request == null)
 				throw new ArgumentNullException(nameof(request));
 
@@ -29,22 +41,21 @@ namespace DesktopToast
 				return ToastResult.Unavailable;
 
 			if (request.IsShortcutValid)
-				await CheckInstallShortcut(request, logger);
+				await CheckInstallShortcut(request);
 
 			if (!request.IsToastValid)
 				return ToastResult.Invalid;
 
-			return await ShowBaseAsync(request, logger);
+			return await ShowBaseAsync(request);
 		}
 
 		/// <summary>
 		/// Shows a toast using JSON format.
 		/// </summary>
 		/// <param name="requestJson">Toast request in JSON format</param>
-		/// <param name="logger">Logger</param>
 		/// <returns>Result of showing a toast</returns>
-		public static async Task<ToastResult> ShowAsync(string requestJson, ILogger logger)
-		{
+		public async Task<ToastResult> ShowAsync(string requestJson)
+        {
 			ToastRequest request;
 			try
 			{
@@ -55,7 +66,7 @@ namespace DesktopToast
 				return ToastResult.Invalid;
 			}
 
-			return await ShowAsync(request, logger);
+			return await ShowAsync(request);
 		}
 
 		/// <summary>
@@ -65,7 +76,7 @@ namespace DesktopToast
 		/// <param name="appId">AppUserModelID</param>
 		/// <param name="logger">Logger</param>
 		/// <returns>Result of showing a toast</returns>
-		public static async Task<ToastResult> ShowAsync(XmlDocument document, string appId, ILogger logger)
+		public async Task<ToastResult> ShowAsync(XmlDocument document, string appId, ILogger logger)
 		{
 			if (document == null)
 				throw new ArgumentNullException(nameof(document));
@@ -76,7 +87,7 @@ namespace DesktopToast
 			if (!OsVersion.IsEightOrNewer)
 				return ToastResult.Unavailable;
 
-			return await ShowBaseAsync(document, appId, logger);
+			return await ShowBaseAsync(document, appId);
 		}
 
 		#region Document
@@ -92,10 +103,9 @@ namespace DesktopToast
 		/// Prepares a toast document.
 		/// </summary>
 		/// <param name="request">Toast request</param>
-		/// <param name="logger">Logger</param>
 		/// <returns>Toast document</returns>
-		private static XmlDocument PrepareToastDocument(ToastRequest request, ILogger logger)
-		{
+		private XmlDocument PrepareToastDocument(ToastRequest request)
+        {
 			XmlDocument document;
 			if (!string.IsNullOrWhiteSpace(request.ToastXml))
 			{
@@ -282,43 +292,40 @@ namespace DesktopToast
 		/// <remarks>It seems that roughly 3 seconds are required.</remarks>
 		private static readonly TimeSpan _waitingDuration = TimeSpan.FromSeconds(3);
 
-		/// <summary>
-		/// Checks and installs a shortcut file in Start menu.
-		/// </summary>
-		/// <param name="request">Toast request</param>
-		/// <param name="logger">Logger</param>
-		private static async Task CheckInstallShortcut(ToastRequest request, ILogger logger)
-		{
+        /// <summary>
+        /// Checks and installs a shortcut file in Start menu.
+        /// </summary>
+        /// <param name="request">Toast request</param>
+        private async Task CheckInstallShortcut(ToastRequest request)
+        {
 			var shortcutFilePath = Path.Combine(
 				Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), // Not CommonStartMenu
 				"Programs",
 				request.ShortcutFileName);
 
-			var shortcut = new Shortcut();
+			var shortcut = new Shortcut(loggerFactory);
 
 			if (!shortcut.CheckShortcut(
-				shortcutPath: shortcutFilePath,
-				targetPath: request.ShortcutTargetFilePath,
-				arguments: request.ShortcutArguments,
-				comment: request.ShortcutComment,
-				workingFolder: request.ShortcutWorkingFolder,
-				windowState: request.ShortcutWindowState,
-				iconPath: request.ShortcutIconFilePath,
-				appId: request.AppId,
-				activatorId: request.ActivatorId,
-				logger: logger))
+                shortcutPath: shortcutFilePath,
+                targetPath: request.ShortcutTargetFilePath,
+                arguments: request.ShortcutArguments,
+                comment: request.ShortcutComment,
+                workingFolder: request.ShortcutWorkingFolder,
+                windowState: request.ShortcutWindowState,
+                iconPath: request.ShortcutIconFilePath,
+                appId: request.AppId,
+                activatorId: request.ActivatorId))
 			{
 				shortcut.InstallShortcut(
-					shortcutPath: shortcutFilePath,
-					targetPath: request.ShortcutTargetFilePath,
-					arguments: request.ShortcutArguments,
-					comment: request.ShortcutComment,
-					workingFolder: request.ShortcutWorkingFolder,
-					windowState: request.ShortcutWindowState,
-					iconPath: request.ShortcutIconFilePath,
-					appId: request.AppId,
-					activatorId: request.ActivatorId,
-					logger: logger);
+                    shortcutPath: shortcutFilePath,
+                    targetPath: request.ShortcutTargetFilePath,
+                    arguments: request.ShortcutArguments,
+                    comment: request.ShortcutComment,
+                    workingFolder: request.ShortcutWorkingFolder,
+                    windowState: request.ShortcutWindowState,
+                    iconPath: request.ShortcutIconFilePath,
+                    appId: request.AppId,
+                    activatorId: request.ActivatorId);
 
 				var delay = (TimeSpan.Zero < request.WaitingDuration) ? request.WaitingDuration : _waitingDuration;
 
@@ -336,15 +343,14 @@ namespace DesktopToast
 		/// Shows a toast.
 		/// </summary>
 		/// <param name="request">Toast request</param>
-		/// <param name="logger">Logger</param>
 		/// <returns>Result of showing a toast</returns>
-		private static async Task<ToastResult> ShowBaseAsync(ToastRequest request, ILogger logger)
-		{
-			var document = PrepareToastDocument(request, logger);
+		private async Task<ToastResult> ShowBaseAsync(ToastRequest request)
+        {
+			var document = PrepareToastDocument(request);
 			if (document == null)
 				return ToastResult.Invalid;
 
-			return await ShowBaseAsync(document, request.AppId, logger, request.MaximumDuration);
+			return await ShowBaseAsync(document, request.AppId, request.MaximumDuration);
 		}
 
 		/// <summary>
@@ -352,12 +358,11 @@ namespace DesktopToast
 		/// </summary>
 		/// <param name="document">Toast document</param>
 		/// <param name="appId">AppUserModelID</param>
-		/// <param name="logger">Logger</param>
 		/// <param name="maximumDuration">Optional maximum duration</param>
 		/// <returns>Result of showing a toast</returns>
-		private static async Task<ToastResult> ShowBaseAsync(XmlDocument document, string appId, ILogger logger, TimeSpan maximumDuration = default(TimeSpan))
-		{
-			return await new Toast(logger).ShowAsync(document, appId, maximumDuration);
+		private async Task<ToastResult> ShowBaseAsync(XmlDocument document, string appId, TimeSpan maximumDuration = default(TimeSpan))
+        {
+			return await new Toast(loggerFactory).ShowAsync(document, appId, maximumDuration);
 		}
 
 		#endregion

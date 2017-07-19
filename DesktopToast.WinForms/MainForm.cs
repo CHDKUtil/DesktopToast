@@ -38,7 +38,7 @@ namespace DesktopToast.WinForms
 				AppId = "DesktopToast.WinForms",
 			};
 
-			var result = await ToastManager.ShowAsync(request, NoOpLogger.Instance);
+			var result = await new ToastManager(NoOpLoggerFactory.Instance).ShowAsync(request);
 
 			return result.ToString();
 		}

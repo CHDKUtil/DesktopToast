@@ -29,8 +29,8 @@ namespace DesktopToast.Proxy
 #endif
 			}
 
-			ToastManager.ShowAsync(requestString, NoOpLogger.Instance)
-				.ContinueWith(result => Console.WriteLine(result.Result))
+			new ToastManager(NoOpLoggerFactory.Instance).ShowAsync(requestString)
+                .ContinueWith(result => Console.WriteLine(result.Result))
 				.Wait();
 		}
 	}

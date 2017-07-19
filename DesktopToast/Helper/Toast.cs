@@ -18,10 +18,10 @@ namespace DesktopToast.Helper
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Toast"/> class.
 		/// </summary>
-		/// <param name="logger">Logger</param>
-		public Toast(ILogger logger)
+		/// <param name="loggerFactory">Logger factory</param>
+		public Toast(ILoggerFactory loggerFactory)
 		{
-			this.logger = logger;
+            logger = loggerFactory.CreateLogger<Toast>();
 			tcs = new TaskCompletionSource<ToastResult>();
 		}
 
