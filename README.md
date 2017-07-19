@@ -34,7 +34,7 @@ public async Task<bool> ShowToastAsync()
         AppId = "DesktopToast.Wpf",
     };
 
-    var result = await ToastManager.ShowAsync(request);
+    var result = await new ToastManager(loggerFactory).ShowAsync(request);
 
     return (result == ToastResult.Activated);
 }
